@@ -172,7 +172,7 @@ norm = Normalize(vmin=cmin, vmax=cmax)
 
 cmap = plt.get_cmap('YlGnBu')
 sm = cmx.ScalarMappable(norm=norm, cmap=cmap)
-sm._A = []  # Empty array for the ScalarMappable
+sm._A = []
 
 cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.04)
 cbar.set_label('Population Density (people per sq. km)', rotation=270, labelpad=15, fontsize=12)
@@ -200,15 +200,13 @@ plt.show()
 # -----------------------------
 
 # Step 14: Calculate centroids to get longitude and latitude
-# Use representative_point() for better placement within the country polygon
 merged['centroid'] = merged['geometry'].representative_point()
 merged['Longitude'] = merged['centroid'].x
 merged['Latitude'] = merged['centroid'].y
 
 # Step 15: Apply logarithmic transformation to Population Density
-# Adding a small value to avoid log(0) if necessary
 merged['Log Population Density'] = np.log10(merged['Population Density'].replace(0, np.nan))
-merged = merged.dropna(subset=['Log Population Density'])  # Drop entries where Population Density was 0
+merged = merged.dropna(subset=['Log Population Density'])
 
 # Step 16: Plotting the Population Density Scatter Plot with Log Transformation
 plt.figure(figsize=(15, 10))
@@ -217,7 +215,7 @@ plt.figure(figsize=(15, 10))
 scatter = plt.scatter(
     merged['Longitude'],
     merged['Latitude'],
-    s=merged['Log Population Density'] * 50,  # Adjust size scaling factor as needed
+    s=merged['Log Population Density'] * 50,
     alpha=0.6,
     c=merged['Log Population Density'],
     cmap='YlGnBu',
